@@ -181,6 +181,18 @@ class FriendsController extends Controller
             ]);
         }
 
+        $alreadySent = FriendRequest::query()
+            ->where('sender', $me->id)
+            ->where('receiver', $user->id)
+            ->exists();
+
+        if($alreadySent) {
+            return response()->json([
+                'error' => true,
+                'error_msg' => 'Friend request already sent!'
+            ]);
+        }
+
         // Send request.
         $newRequest = new FriendRequest();
         $newRequest->sender = $me->id;
