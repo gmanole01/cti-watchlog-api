@@ -82,6 +82,33 @@ class ShowsController extends Controller
         ]);
     }
 
+    public function topRated(Request $request) {
+        $genres = $this->getGenres();
+
+        $page = (int) $request->get('page', 1);
+        $shows = Tmdb::getTvApi()->getTopRated([
+            'page' => $page
+        ]);
+        $shows = $shows['results'] ?: [];
+        $shows = collect($shows)
+            ->map(function($show) use($genres) {
+                return $this->processShow($show, $genres);
+            });
+
+        return response()->json([
+            'error' => false,
+            'page' => $page,
+            'tv_shows' => $shows
+        ]);
+    }
+
+    public function genres() {
+        return response()->json([
+            'error' => false,
+            'genres' => $this->getGenres()->values()
+        ]);
+    }
+
     /**
      * @return Collection
      */

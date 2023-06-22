@@ -51,8 +51,8 @@ Route::group([
     // movies
     Route::prefix('shows')->group(function() {
         Route::post('discover', [\App\Http\Controllers\ShowsController::class, 'discover']);
-        Route::post('top_rated', [MoviesController::class, 'topRated']);
-        Route::post('genres', [MoviesController::class, 'genres']);
+        Route::post('top_rated', [\App\Http\Controllers\ShowsController::class, 'topRated']);
+        Route::post('genres', [\App\Http\Controllers\ShowsController::class, 'genres']);
 
         Route::post('get/{id}', [ShowsController::class, 'get']);
         Route::post('get/{showId}/season/{seasonNumber}', [ShowsController::class, 'getSeason']);
@@ -66,9 +66,12 @@ Route::group([
         });
 
         Route::prefix('watched')->group(function() {
-            Route::post('all', [\App\Http\Controllers\WatchedMoviesController::class, 'all']);
-            Route::post('add', [\App\Http\Controllers\WatchedMoviesController::class, 'add']);
+            Route::post('all', [\App\Http\Controllers\WatchedShowsController::class, 'all']);
         });
+    });
+
+    Route::prefix('account/picture')->group(function() {
+        Route::post('new', [\App\Http\Controllers\AccountController::class, 'newProfilePicture']);
     });
 
     Route::prefix('friends')->group(function() {
