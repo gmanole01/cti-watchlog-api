@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MoviesController;
+use App\Http\Controllers\ShowsController;
+use App\Http\Controllers\WatchedShowsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +48,28 @@ Route::group([
     });
 
     // shows
+    // movies
+    Route::prefix('shows')->group(function() {
+        Route::post('discover', [\App\Http\Controllers\ShowsController::class, 'discover']);
+        Route::post('top_rated', [MoviesController::class, 'topRated']);
+        Route::post('genres', [MoviesController::class, 'genres']);
+
+        Route::post('get/{id}', [ShowsController::class, 'get']);
+        Route::post('get/{showId}/season/{seasonNumber}', [ShowsController::class, 'getSeason']);
+
+        Route::post('get/{showId}/season/{seasonNumber}/episode/{episodeNumber}/watched', [WatchedShowsController::class, 'markEpisodeWatched']);
+        Route::post('get/{showId}/season/{seasonNumber}/episode/{episodeNumber}/not_watched', [WatchedShowsController::class, 'markEpisodeUnwatched']);
+
+        Route::prefix('favourites')->group(function() {
+            Route::post('all', [\App\Http\Controllers\FavouriteShowsController::class, 'all']);
+            Route::post('add', [\App\Http\Controllers\FavouriteShowsController::class, 'add']);
+        });
+
+        Route::prefix('watched')->group(function() {
+            Route::post('all', [\App\Http\Controllers\WatchedMoviesController::class, 'all']);
+            Route::post('add', [\App\Http\Controllers\WatchedMoviesController::class, 'add']);
+        });
+    });
 
     Route::prefix('friends')->group(function() {
         Route::post('all', [\App\Http\Controllers\FriendsController::class, 'all']);

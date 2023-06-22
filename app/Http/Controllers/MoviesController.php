@@ -61,30 +61,7 @@ class MoviesController extends Controller
 
         return response()->json([
             'error' => false,
-            'data' => $this->prepareMovie($movie)
-        ]);
-    }
-
-    /**
-     * @param array $movie
-     * @param array|Collection|null $genres
-     * @return array
-     */
-    public function processMovie(array $movie, array | Collection $genres = null) {
-        if(!$genres) {
-            $genres = $this->getGenres();
-        }
-
-        $poster = $this->buildPosterUrl($movie['poster_path']);
-        return array_merge($movie, [
-            'poster' => $poster,
-            'poster_small' => $poster,
-            'poster_medium' => $poster,
-            'poster_large' => $poster,
-            'genres' => array_map(function($item) use($genres) {
-                return $genres[(int) $item] ?? null;
-            }, $movie['genre_ids']),
-            'rating' => $movie['vote_average']
+            'data' => $this->processMovie($movie)
         ]);
     }
 

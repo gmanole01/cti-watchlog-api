@@ -63,8 +63,7 @@ class AuthController extends Controller
                 Password::min(8)
             ],
             'repeat_password' => 'required|same:password',
-            'fcm_token' => 'required',
-            'language' => 'required'
+            'fcm_token' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -85,7 +84,8 @@ class AuthController extends Controller
             'password'  => $hash,
             'email'     => $validated['email_address'],
             'fcm_token' => $validated['fcm_token'],
-            'language'  => $validated['language']
+            'language'  => '',
+            'profile_picture' => '',
         ]);
 
         return response()->json([

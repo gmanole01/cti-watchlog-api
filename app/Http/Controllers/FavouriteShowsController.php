@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\FavouriteMovie;
+use App\Models\FavouriteShow;
 use Illuminate\Http\Request;
 use Tmdb\Laravel\Facades\Tmdb;
 
-class FavouriteMoviesController extends Controller
+class FavouriteShowsController extends Controller
 {
 
     public function __construct() {
@@ -16,23 +17,19 @@ class FavouriteMoviesController extends Controller
     public function all() {
         $me = auth()->user();
 
-        $all = FavouriteMovie::query()
+        $all = FavouriteShow::query()
             ->where('user_id', $me->id)
             ->get();
 
-        $movies = $all->map(function($favourite) {
-            $movie = Tmdb::getMoviesApi()->getMovie($favourite->movie_id);
+        $shows = $all->map(function($favourite) {
+            $show = Tmdb::getTvApi()->getTvshow($favourite->show_id);
 
-            return [
-                'id' => $favourite->id,
-                'timestamp' => $favourite->created_at->getTimestamp(),
-                'movie_data' => $this->processMovie($movie)
-            ];
+            return $this->processMovie($show);
         })->filter();
 
         return response()->json([
             'error' => false,
-            'movies' => $movies
+            'tv_shows' => $shows
         ]);
     }
 
@@ -44,9 +41,9 @@ class FavouriteMoviesController extends Controller
 
         $me = auth()->user();
 
-        $alreadyFavourite = FavouriteMovie::query()
+        $alreadyFavourite = FavouriteShow::query()
             ->where('user_id', $me->id)
-            ->where('movie_id', $id)
+            ->where('show_id', $id)
             ->exists();
 
         if($alreadyFavourite) {
@@ -56,9 +53,9 @@ class FavouriteMoviesController extends Controller
         }
 
         // add
-        $favourite = new FavouriteMovie();
+        $favourite = new FavouriteShow();
         $favourite->user_id = $me->id;
-        $favourite->movie_id = $id;
+        $favourite->show_id = $id;
         $favourite->save();
 
         return response()->json([
