@@ -26,13 +26,26 @@ Route::group([
     Route::post('register', [AuthController::class, 'register']);
     Route::post('me', [AuthController::class, 'me']);
 
+    // movies
     Route::prefix('movies')->group(function() {
         Route::post('discover', [MoviesController::class, 'discover']);
         Route::post('top_rated', [MoviesController::class, 'topRated']);
         Route::post('genres', [MoviesController::class, 'genres']);
 
         Route::post('get/{id}', [MoviesController::class, 'get']);
+
+        Route::prefix('favourites')->group(function() {
+            Route::post('all', [\App\Http\Controllers\FavouriteMoviesController::class, 'all']);
+            Route::post('add', [\App\Http\Controllers\FavouriteMoviesController::class, 'add']);
+        });
+
+        Route::prefix('watched')->group(function() {
+            Route::post('all', [\App\Http\Controllers\WatchedMoviesController::class, 'all']);
+            Route::post('add', [\App\Http\Controllers\WatchedMoviesController::class, 'add']);
+        });
     });
+
+    // shows
 
     Route::prefix('friends')->group(function() {
         Route::post('all', [\App\Http\Controllers\FriendsController::class, 'all']);

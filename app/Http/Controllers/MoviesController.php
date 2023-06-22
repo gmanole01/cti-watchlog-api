@@ -59,36 +59,10 @@ class MoviesController extends Controller
     public function get(int $id) {
         $movie = Tmdb::getMoviesApi()->getMovie($id);
 
-        $backdrop = $this->buildBackdropUrl($movie['backdrop_path'] ?? '');
-        $poster = $this->buildPosterUrl($movie['poster_path'] ?? '');
-
         return response()->json([
             'error' => false,
-            'data' => array_merge(
-                $movie,
-                [
-                    'poster' => $poster,
-                    'poster_small' => $poster,
-                    'poster_medium' => $poster,
-                    'poster_large' => $poster,
-
-                    'backdrop' => $backdrop,
-                    'backdrop_small' => $backdrop,
-                    'backdrop_medium' => $backdrop,
-                    'backdrop_large' => $backdrop,
-
-                    'rating' => $movie['vote_average']
-                ]
-            )
+            'data' => $this->prepareMovie($movie)
         ]);
-    }
-
-    public function buildBackdropUrl(?string $backdrop): string {
-        return 'https://image.tmdb.org/t/p/original/' . ltrim($backdrop ?: '', '/');
-    }
-
-    public function buildPosterUrl(?string $poster): string {
-        return 'https://image.tmdb.org/t/p/original/' . ltrim($poster ?: '', '/');
     }
 
     /**
