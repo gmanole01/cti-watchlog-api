@@ -147,8 +147,9 @@ class AuthController extends Controller
         return response()->json([
             'error' => false,
             'data' => [
-                'email_address' => $user->email_address,
+                'email_address' => $user->email,
                 'username' => $user->username,
+                'profile_picture' => $user->profile_picture,
 
                 'access_token' => $token,
                 'token_type' => 'bearer',
